@@ -90,6 +90,7 @@ erDiagram
     LOADED_LIBRARY2     }o--o{ LOADED_LIBRARY           : depends_on
 
 ```
+
 ### Project management model
 
 ```mermaid
@@ -401,7 +402,7 @@ erDiagram
 
 All objects can be linked to user-defined labels. Labels are simple strings with no blank, regex r"\w{0:36}".
 
-Labels are attached to the root folder. They can be read by everyone, added by any contributor, and modified or deleted only by global administrators. 
+Labels are attached to the root folder. They can be read by everyone, added by any contributor, and modified or deleted only by global administrators.
 
 ```mermaid
 erDiagram
@@ -430,6 +431,7 @@ All models have the following fields:
 The domain is the fundamental perimeter for access control. All objects, in particular domains, within a domain, have consistent access rights. If this granularity is not sufficient, the entity shall define new domains.
 
 Note: the IAM model is based on folders. A folder has a type among:
+
 - ROOT: the root folder, which is also called "global domain".
 - DOMAIN: a user-defined domain.
 - ENCLAVE: a invisible folder used to confine the actions of a third party.
@@ -438,6 +440,7 @@ Note: the IAM model is based on folders. A folder has a type among:
 
 Inside a domain, assessments can be grouped in perimeters, with no impact on access control.
 The perimeter has the following fields:
+
 - ref_id
 - name
 - description
@@ -513,15 +516,16 @@ Assets are of type primary or supporting. A primary asset has no parent, a suppo
 
 The following disaster recovery objectives (measured in seconds) can be defined on assets:
 
- | Abbreviation | Name                       | Description |
- | ------------ | -------------------------- | ----------- |
- | RTO          | Recovery Time Objective    | ...         |
- | RPO          | Recovery Point Objetive    | ...         |
- | MTD          | Maximum Tolerable Downtime | ...         |
+| Abbreviation | Name                       | Description |
+| ------------ | -------------------------- | ----------- |
+| RTO          | Recovery Time Objective    | ...         |
+| RPO          | Recovery Point Objetive    | ...         |
+| MTD          | Maximum Tolerable Downtime | ...         |
 
 Assets have security objectives. Security objectives are specific goals or requirements that an organization, system, or process aims to achieve in order to ensure its security and protect its primary assets. They are a subset of qualifications.
 
 Security objectives are measured using a specifc scale. For now, the following scales are defined:
+
 - 0-3: coded as 0-3
 - 1-4: coded as 0-3
 - FIPS-199: coded as 0-3
@@ -589,6 +593,7 @@ Vulnerabilities are used to clarify a risk scenario and to follow remediations, 
 Vulnerabilities have a status among the following values: --/potential/exploitable/mitigated/fixed.
 
 The format of the references field is list of the following objects (* for mandatory):
+
 - string ref_id (*)
 - url reference_link
 - boolean is_cve
@@ -654,7 +659,7 @@ When a compliance assessment is created, each requirement of the corresponding f
 Here are the specific fields for requirement assessments:
 
 - result: --/compliant/partially compliant/non-compliant/not applicable
-- score: --/<integer value from min_score to max_score>.
+- score: --/`<integer value from min_score to max_score>`.
 - a status: (todo/in progress/in review/done) that facilitates reporting.
 
 The compliance assessment score is a read-only field which is calculated when at least one requirement assessment is scored. We calculate the average of scored requriement assessments (ignoring requirement assessments with an undefined score or with status not-applicable).
@@ -961,8 +966,8 @@ To simplify access control, we use a RBAC model.
 | Administrator       | full access (except approval), and specifically management of domains, users and users rights                                     |
 | referential_manager | capacity to manage referentials in the root folder                                                                                |
 | Domain manager      | full access to selected domains (except approval), in particular managing rights for these domains. Read access to global objects |
-| Analyst             | readwrite acces to selected domains. Read access to global and domain objects                                            |
-| Reader              | read access to selected domains                                                                                          |
+| Analyst             | readwrite acces to selected domains. Read access to global and domain objects                                                     |
+| Reader              | read access to selected domains                                                                                                   |
 | Risk approver       | like reader, but with additional capability to approve risk acceptances                                                           |
 | Reviewer            | like reader, but with additional capability to review assessments.                                                                |
 
@@ -1017,7 +1022,7 @@ The following approach has been retained:
 - This compliance assessment is reviewed by the client, requirement by requirement.
 - An import/export functionality for compliance assessments shall be available to transmit a filled questionnaire from the third-party to the client.
 - Review features are added to compliance assessment to enable this workflow in a generic way.
-- A requirement node can include a question (which is a generic improvement, as many frameworks have questions), as a JSON form. This will correspond to a JSON answer in the corresponding requirement assessment.
+- A requirement node can include questions (which is a generic improvement, as many frameworks have questions), as a JSON form. This will correspond to a JSON answer in the corresponding requirement assessment.
 
 ### Entity-relationship diagram
 
@@ -1160,7 +1165,7 @@ There is no link between representatives (modeling of the ecosystem) and users o
 #### Requirement assessment
 
 - add the following fields:
-  - answer: a json corresponding to the optional question of the requirement node.
+  - answer: a json corresponding to the optional questions of the requirement node.
 
 #### Compliance assessment
 
@@ -1170,7 +1175,7 @@ There is no link between representatives (modeling of the ecosystem) and users o
 #### Requirement node
 
 - Add the following fields:
-  - question: a json field describing a form.
+  - questions: a json field describing a form.
 
 #### Applied control
 
@@ -1185,13 +1190,21 @@ Note: in the future, we will use the same approach for policies.
 
 The format for question and answer json fields will evolve over time. The initial format is the following:
 
-- question:
+- questions:
 
 ```json
 {
-    "question": {
-        "version": 1
-        "schema": {...}
+    "urn:intuitem:risk:req_node:example:a.1:question:1": {
+        "question_type": "unique_choice",
+        "question_choices": [
+            "yes",
+            "no",
+            "n/a"
+        ],
+        "text": "",
+    },
+    "urn:intuitem:risk:req_node:example:a.1:question:2": {
+    ...
     }
 }
 ```
@@ -1214,6 +1227,7 @@ The objects manipulated by the third party (compliance assessment and evidences)
 ## Near-term evolutions
 
 We need to add in the near term the follwoing objects:
+
 - EBIOS-RM study
 - Audit campaign
 - Third-party campaign
@@ -1226,27 +1240,28 @@ Each of these objects will have its specific datamodel. Factoring will be done a
 
 ### Mapping of essential concepts
 
-| EBIOS-RM (english)    | EBIOS-RM (french)       | CISO Assistant                                            |
-| --------------------- | ----------------------- | --------------------------------------------------------- |
-| Study                 | Etude                   | Study                                                     |
-| Studied object        | Objet de l'étude        | Description of the Study                                  |
-| Mission               | Mission                 | Mission of the reference entity added to the Study        |
-| Business asset        | Valeurs métier          | Primary asset                                             |
-| Supporting asset      | Bien support            | Supporting asset                                          |
+| EBIOS-RM (english)    | EBIOS-RM (french)         | CISO Assistant                                            |
+| --------------------- | ------------------------- | --------------------------------------------------------- |
+| Study                 | Etude                     | Study                                                     |
+| Studied object        | Objet de l'étude         | Description of the Study                                  |
+| Mission               | Mission                   | Mission of the reference entity added to the Study        |
+| Business asset        | Valeurs métier           | Primary asset                                             |
+| Supporting asset      | Bien support              | Supporting asset                                          |
 | Feared event          | Evénement redouté       | Risk analysis at asset level                              |
-| Impact                | Impact                  | Impact in a risk analysis                                 |
+| Impact                | Impact                    | Impact in a risk analysis                                 |
 | Security baseline     | Socle de sécurité       | Compliance frameworks and audits                          |
-| Risk origins          | Sources de risque       | RoTo                                                      |
-| Target objectives     | Objectifs visés         | RoTo                                                      |
-| Ecosystem             | Ecosystème              | Third Party Risk Management                               |
+| Risk origins          | Sources de risque         | RoTo                                                      |
+| Target objectives     | Objectifs visés          | RoTo                                                      |
+| Ecosystem             | Ecosystème               | Third Party Risk Management                               |
 | Strategic scenarios   | Scénarios stratégiques  | Risk analysis at strategic level (focus on impact)        |
 | Security controls     | Mesures de sécurité     | Reference/applied controls                                |
 | Operational scenarios | Scénarios opérationnels | Risk analysis at operational level (focus on probability) |
-| Risk treatment        | Traitement du risque    | Applied controls in a risk analysis                       |
+| Risk treatment        | Traitement du risque      | Applied controls in a risk analysis                       |
 
 ### EBIOS-RM study
 
 The type EBIOS-RM study is a sort of assessment. It contains the following specific fields:
+
 - reference risk matrix (chosen at creation and immutable after creation)
 - ref_id
 - name of the study
@@ -1262,6 +1277,7 @@ The type EBIOS-RM study is a sort of assessment. It contains the following speci
 - a resulting risk assessment (workshop 5)
 
 The object feared events (workshop 1) contains the following fields:
+
 - primary asset
 - ref_id
 - name
@@ -1272,6 +1288,7 @@ The object feared events (workshop 1) contains the following fields:
 - justification
 
 The object risk_origin_target_objective (workshop 2) contains the following fields:
+
 - risk origin (--/state/organized crime/terrorist/activist/professional/amateur/avenger/pathological/)
 - target objective (text)
 - motivation (--/1 very low/2 low/3 significant/4 strong) (--/très peu/peu/assez/fortement motivé)
@@ -1282,6 +1299,7 @@ The object risk_origin_target_objective (workshop 2) contains the following fiel
 - justification
 
 The object ecosystem entity (workshop 3) links to a TPRM entity, and contains the following fields:
+
 - category (provider/partner/client/...)
 - third-party entity from TPRM (optional)
 - Dependence
@@ -1292,6 +1310,7 @@ The object ecosystem entity (workshop 3) links to a TPRM entity, and contains th
 - justification
 
 The object strategic attack path (workshop 3) contains the following fields:
+
 - risk_origin_target_objective
 - description
 - affected stakeholders
@@ -1302,6 +1321,7 @@ The object strategic attack path (workshop 3) contains the following fields:
 - justification
 
 THe object operational scenario (workshop 4) contains the following fields:
+
 - strategic attack path
 - list of techniques/threats (typically from Mitre Att@ck)
 - description
@@ -1310,6 +1330,7 @@ THe object operational scenario (workshop 4) contains the following fields:
 - justification
 
 The frontend for risk study shall propose the following steps:
+
 - workshop 1: framing and security baseline (cadrage et socle de sécurité)
   - define the study, the reference entity and its mission
   - select/define primary assets ("valeurs métier")
@@ -1324,11 +1345,10 @@ The frontend for risk study shall propose the following steps:
   - list of strategic scenarios/attack paths
 - workshop 4: operational scenarios
   - list of operational scenarios
-  - The risk assessment is generated automatically, thanks to a dedicated button. When the risk assessment is generated again, automatic versioning is applied, and mitigations can be copied on demand (based on ref_id of operational scenarios). 
+  - The risk assessment is generated automatically, thanks to a dedicated button. When the risk assessment is generated again, automatic versioning is applied, and mitigations can be copied on demand (based on ref_id of operational scenarios).
 - workshop 5: risk treatment
   - After generation, a risk assessment is fully editable, to allow customisation, and the risk assessment can be managed normally as any other risk assessment.
   - risk treatment is based on the risk assessment.
-
 
 ```mermaid
 erDiagram
