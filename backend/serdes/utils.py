@@ -456,11 +456,15 @@ def get_domain_export_objects(domain: Folder):
         ebios_rm_study__in=ebios_rm_studies
     ).distinct()
 
-    risk_matrices = RiskMatrix.objects.filter(
-        Q(folder__in=folders)
-        | Q(riskassessment__in=risk_assessments)
-        | Q(ebios_rm_studies__in=ebios_rm_studies)
-    ).distinct()
+    risk_matrices = (
+        RiskMatrix.objects.filter(
+            Q(folder__in=folders)
+            | Q(riskassessment__in=risk_assessments)
+            | Q(ebios_rm_studies__in=ebios_rm_studies)
+        )
+        .filter(library__isnull=True)
+        .distinct()
+    )
 
     compliance_assessments = ComplianceAssessment.objects.filter(
         Q(project__in=projects)
@@ -470,9 +474,13 @@ def get_domain_export_objects(domain: Folder):
     requirement_assessments = RequirementAssessment.objects.filter(
         compliance_assessment__in=compliance_assessments
     ).distinct()
-    frameworks = Framework.objects.filter(
-        Q(folder__in=folders) | Q(complianceassessment__in=compliance_assessments)
-    ).distinct()
+    frameworks = (
+        Framework.objects.filter(
+            Q(folder__in=folders) | Q(complianceassessment__in=compliance_assessments)
+        )
+        .filter(library__isnull=True)
+        .distinct()
+    )
 
     entities = Entity.objects.filter(
         Q(folder__in=folders)
