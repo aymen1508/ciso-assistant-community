@@ -23,7 +23,7 @@ services:
     environment:
       - ALLOWED_HOSTS=backend,localhost
       - CISO_ASSISTANT_URL=https://localhost:8443
-      - DJANGO_DEBUG=False
+      - DJANGO_DEBUG=True
     volumes:
       - ./db:/code/db
     entrypoint:
